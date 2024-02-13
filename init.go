@@ -9,8 +9,6 @@ import (
 	"github.com/mit-dci/zksigma/btcec"
 )
 
-// ZKLedgerCurve is a global cache for the curve and two generator points used in the various proof
-// generation and verification functions.
 var ZKLedgerCurve zksigma.ZKPCurveParams
 
 func generateH2tothe() []zksigma.ECPoint {
@@ -25,14 +23,8 @@ func generateH2tothe() []zksigma.ECPoint {
 func init() {
 	s256 := sha256.New()
 
-	// This was changed in ZKSigma, but keys already generated part of the repo
-	// should still work. So reverted this to what was originally in ZKLedger,
-
-	// see:
-	// hashedString := s256.Sum([]byte("This is the new random point in zksigma"))
-	// HX, HY := btcec.S256().ScalarMult(btcec.S256().Gx, btcec.S256().Gy, hashedString)
 	curValue := btcec.S256().Gx
-	s256.Write(new(big.Int).Add(curValue, big.NewInt(2)).Bytes()) // hash G_x + 2 which
+	s256.Write(new(big.Int).Add(curValue, big.NewInt(2)).Bytes())
 
 	potentialXValue := make([]byte, 33)
 	binary.LittleEndian.PutUint32(potentialXValue, 2)
