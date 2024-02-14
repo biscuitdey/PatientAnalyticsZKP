@@ -11,8 +11,8 @@ func MakeLedger() *Ledger {
 	return ledger
 }
 
-func (ledger *Ledger) add(ecryptedPatient *EncryptedPatient) int {
-	ecryptedPatient.Index = len(ledger.Patients)
-	ledger.Patients = append(ledger.Patients, *ecryptedPatient)
-	return ecryptedPatient.Index
+func (ledger *Ledger) add(encryptedPatient *EncryptedPatient) int {
+	encryptedPatient.id = len(ledger.Patients)
+	ledger.Patients = append(ledger.Patients, *encryptedPatient)
+	return encryptedPatient.id
 }
