@@ -9,13 +9,13 @@ import (
 	"github.com/mit-dci/zksigma/btcec"
 )
 
-var ZKLedgerCurve zksigma.ZKPCurveParams
+var PatientLedgerCurve zksigma.ZKPCurveParams
 
 func generateH2tothe() []zksigma.ECPoint {
 	Hslice := make([]zksigma.ECPoint, 64)
 	for i := range Hslice {
 		m := big.NewInt(1 << uint(i))
-		Hslice[i].X, Hslice[i].Y = ZKLedgerCurve.C.ScalarBaseMult(m.Bytes())
+		Hslice[i].X, Hslice[i].Y = PatientLedgerCurve.C.ScalarBaseMult(m.Bytes())
 	}
 	return Hslice
 }
@@ -36,10 +36,10 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	ZKLedgerCurve = zksigma.ZKPCurveParams{
+	PatientLedgerCurve = zksigma.ZKPCurveParams{
 		C: btcec.S256(),
 		G: zksigma.ECPoint{btcec.S256().Gx, btcec.S256().Gy},
 		H: zksigma.ECPoint{H.X, H.Y},
 	}
-	ZKLedgerCurve.HPoints = generateH2tothe()
+	PatientLedgerCurve.HPoints = generateH2tothe()
 }
