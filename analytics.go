@@ -22,14 +22,14 @@ func (ledger *Ledger) computeAverage(filteredPatients []EncryptedPatient) zksigm
 
 	for i := 0; i < len(filteredPatients); i++ {
 		encryptedPatient := &filteredPatients[i]
-		totalAge = ZKLedgerCurve.Add(totalAge, encryptedPatient.age)
+		totalAge = PatientLedgerCurve.Add(totalAge, encryptedPatient.age.commitment)
 
 	}
 
 	totalPatients := int64(1 / len(filteredPatients)) // 1 / totalPatients
 	totalPatientsBigInt := new(big.Int).SetInt64(totalPatients)
 
-	average := ZKLedgerCurve.Mult(totalAge, totalPatientsBigInt)
+	average := PatientLedgerCurve.Mult(totalAge, totalPatientsBigInt)
 
 	return average
 }
