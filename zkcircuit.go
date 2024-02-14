@@ -23,7 +23,7 @@ func (circuit *DiseaseCircuit) Define(api frontend.API) error {
 	return nil
 }
 
-func (zk *ZeroKnowledgeProof) generateProof(disease string) *ZeroKnowledgeProof {
+func generateProof(disease string) *ZeroKnowledgeProof {
 	// compiles our circuit into a R1CS
 	var circuit DiseaseCircuit
 	ccs, _ := frontend.Compile(ecc.BN254.ScalarField(), r1cs.NewBuilder, &circuit)
