@@ -7,8 +7,8 @@ import (
 	"github.com/consensys/gnark/frontend/cs/r1cs"
 )
 
-type ZeroKnowledge struct {
-	proof        groth16.Proof
+type ZeroKnowledgeProof struct {
+	value        groth16.Proof
 	verifyingKey groth16.VerifyingKey
 }
 
@@ -23,7 +23,7 @@ func (circuit *DiseaseCircuit) Define(api frontend.API) error {
 	return nil
 }
 
-func (zk *ZeroKnowledge) generateProof(disease string) *ZeroKnowledge {
+func (zk *ZeroKnowledgeProof) generateProof(disease string) *ZeroKnowledgeProof {
 	// compiles our circuit into a R1CS
 	var circuit DiseaseCircuit
 	ccs, _ := frontend.Compile(ecc.BN254.ScalarField(), r1cs.NewBuilder, &circuit)
@@ -42,15 +42,15 @@ func (zk *ZeroKnowledge) generateProof(disease string) *ZeroKnowledge {
 	// groth16: Prove & Verify
 	proof, _ := groth16.Prove(ccs, pk, witness)
 
-	zkValues := &ZeroKnowledge{
-		proof:        proof,
+	zkValues := &ZeroKnowledgeProof{
+		value:        proof,
 		verifyingKey: vk,
 	}
 
 	return zkValues
 }
 
-func (zk *ZeroKnowledge) verify(disease string) bool {
+func (zkp *ZeroKnowledgeProof) verify(disease string) bool {
 	//Disease name - hash and convert to bigint
 	diseaseHash := hash(disease)
 	diseaseBigInt := hashToBigInt(diseaseHash)
@@ -59,7 +59,7 @@ func (zk *ZeroKnowledge) verify(disease string) bool {
 	assignment := DiseaseCircuit{InputDisease: diseaseBigInt}
 	publicWitness, _ := frontend.NewWitness(&assignment, ecc.BN254.ScalarField(), frontend.PublicOnly())
 
-	err := groth16.Verify(zk.proof, zk.verifyingKey, publicWitness)
+	err := groth16.Verify(zkp.value, zkp.verifyingKey, publicWitness)
 
 	if err != nil {
 		return false
