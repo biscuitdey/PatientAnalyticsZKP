@@ -10,7 +10,7 @@ func (ledger *Ledger) filter(disease string) (filteredPatients []EncryptedPatien
 
 	for _, encryptedPatient := range ledger.Patients {
 		//TODO: Check encryptedPatient struct name
-		if encryptedPatient.diseaseZKProof.verify(disease) {
+		if encryptedPatient.disease.verify(disease) {
 			filteredPatients = append(filteredPatients, encryptedPatient)
 		}
 	}
@@ -18,18 +18,18 @@ func (ledger *Ledger) filter(disease string) (filteredPatients []EncryptedPatien
 }
 
 func (ledger *Ledger) computeAverage(filteredPatients []EncryptedPatient) zksigma.ECPoint {
-	comms := zksigma.Zero
+	totalAge := zksigma.Zero
 
 	for i := 0; i < len(filteredPatients); i++ {
 		encryptedPatient := &filteredPatients[i]
-		comms = ZKLedgerCurve.Add(comms, encryptedPatient.Comm)
+		totalAge = ZKLedgerCurve.Add(totalAge, encryptedPatient.age)
 
 	}
 
-	averageScalarInt := int64(1 / len(filteredPatients))
-	averageScalarBigInt := new(big.Int).SetInt64(averageScalarInt)
+	totalPatients := int64(1 / len(filteredPatients)) // 1 / totalPatients
+	totalPatientsBigInt := new(big.Int).SetInt64(totalPatients)
 
-	average := ZKLedgerCurve.Mult(comms, averageScalarBigInt)
+	average := ZKLedgerCurve.Mult(totalAge, totalPatientsBigInt)
 
 	return average
 }
