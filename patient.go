@@ -7,8 +7,8 @@ import (
 )
 
 type AgeCommitment struct {
-	commitment  zksigma.ECPoint
-	randomValue big.Int
+	commitment       zksigma.ECPoint
+	randomValueToken zksigma.ECPoint
 }
 
 type Patient struct {
@@ -21,11 +21,11 @@ type EncryptedPatient struct {
 	age     AgeCommitment
 }
 
-func MakeEncryptedPatient(disease string, age int) *EncryptedPatient {
+func (ledger *Ledger) MakeEncryptedPatient(disease string, age int) *EncryptedPatient {
 
 	diseaseZKP := generateDiseaseProof(disease)
 
-	ageCommitment := generateAgeCommitment(age)
+	ageCommitment := ledger.generateAgeCommitment(age)
 
 	encryptedPatient := &EncryptedPatient{
 		disease: *diseaseZKP,
@@ -38,23 +38,27 @@ func generateDiseaseProof(disease string) *ZeroKnowledgeProof {
 	return generateProof(disease)
 }
 
-func generateAgeCommitment(age int) *AgeCommitment {
+func (ledger *Ledger) generateAgeCommitment(age int) *AgeCommitment {
 	ageBigInt := new(big.Int).SetInt64(int64(age))
 	commitment, randomValue, _ := zksigma.PedCommit(PatientLedgerCurve, ageBigInt)
+	randomValueToken := zksigma.CommitR(PatientLedgerCurve, ledger.Key.pk, randomValue)
+
 	ageCommitment := &AgeCommitment{
-		commitment:  commitment,
-		randomValue: *randomValue,
+		commitment:       commitment,
+		randomValueToken: randomValueToken,
 	}
 
 	return ageCommitment
 }
 
-func verifyAgeCommitment(expectedAge int, computedAgeCommitment zksigma.ECPoint) bool {
+func verifyAgeCommitment(expectedAge int, computedAge *AgeCommitment, pk zksigma.ECPoint, sk *big.Int) bool {
 	expectedAgeBitInt := new(big.Int).SetInt64(int64(expectedAge))
-	expectedAgeCommitment, _, _ := zksigma.PedCommit(PatientLedgerCurve, expectedAgeBitInt)
 
-	if expectedAgeCommitment.X.Cmp(computedAgeCommitment.X) == 0 && expectedAgeCommitment.Y.Cmp(computedAgeCommitment.Y) == 0 {
-		return true
-	}
-	return false
+	gv := PatientLedgerCurve.Neg(PatientLedgerCurve.Mult(PatientLedgerCurve.G, expectedAgeBitInt)) // 1 / g^\sum{v_i}
+	T := PatientLedgerCurve.Add(computedAge.commitment, gv)
+
+	equivalenceProof, _ := zksigma.NewEquivalenceProof(PatientLedgerCurve, T, computedAge.randomValueToken, PatientLedgerCurve.H, pk, sk)
+	isVerified, _ := equivalenceProof.Verify(PatientLedgerCurve, T, computedAge.randomValueToken, PatientLedgerCurve.H, pk)
+
+	return isVerified
 }

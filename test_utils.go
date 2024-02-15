@@ -1,9 +1,5 @@
 package main
 
-import (
-	"github.com/mit-dci/zksigma"
-)
-
 func SetupTestData() ([]Patient, *Ledger) {
 	//Make ledger
 	ledger := MakeLedger()
@@ -48,14 +44,14 @@ func SetupTestData() ([]Patient, *Ledger) {
 
 	//Encrypt patient data and add to ledger
 	for _, patient := range patients {
-		encryptedPatient := MakeEncryptedPatient(patient.disease, patient.age)
+		encryptedPatient := ledger.MakeEncryptedPatient(patient.disease, patient.age)
 		ledger.add(encryptedPatient)
 	}
 
 	return patients, ledger
 }
 
-func calculateAverageAge(patients []Patient) int {
+func calculateTotalAge(patients []Patient) int {
 	if len(patients) == 0 {
 		return 0
 	}
@@ -65,11 +61,12 @@ func calculateAverageAge(patients []Patient) int {
 		totalAge += patient.age
 	}
 
-	return totalAge / len(patients)
+	return totalAge
 }
 
-func calculateEncryptedAverageAge(encryptedPatients []EncryptedPatient) zksigma.ECPoint {
-	return computeAverage(encryptedPatients)
+func (ledger *Ledger) calculateAverageAge(totalAge int, totalPatients int, encryptedPatients []EncryptedPatient) int {
+	totalAgeCommitment := computeSum(encryptedPatients)
+	return ledger.computeAverage(totalAge, *totalAgeCommitment, totalPatients)
 }
 
 func filterPatients(disease string, patients []Patient) (filteredPatients []Patient) {

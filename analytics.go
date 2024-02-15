@@ -1,24 +1,29 @@
 package main
 
 import (
-	"math/big"
-
 	"github.com/mit-dci/zksigma"
 )
 
-func computeAverage(encryptedPatients []EncryptedPatient) zksigma.ECPoint {
-	totalAge := zksigma.Zero
+func computeSum(encryptedPatients []EncryptedPatient) (totalAge *AgeCommitment) {
+	totalAgeCommitment := zksigma.Zero
+	totalRandomToken := zksigma.Zero
 
 	for i := 0; i < len(encryptedPatients); i++ {
 		encryptedPatient := &encryptedPatients[i]
-		totalAge = PatientLedgerCurve.Add(totalAge, encryptedPatient.age.commitment)
+		totalAgeCommitment = PatientLedgerCurve.Add(totalAgeCommitment, encryptedPatient.age.commitment)
+		totalRandomToken = PatientLedgerCurve.Add(totalRandomToken, encryptedPatient.age.randomValueToken)
 
 	}
+	return &AgeCommitment{
+		commitment:       totalAgeCommitment,
+		randomValueToken: totalRandomToken,
+	}
+}
 
-	totalPatients := int64(1 / len(encryptedPatients)) // 1 / totalPatients
-	totalPatientsBigInt := new(big.Int).SetInt64(totalPatients)
+func (ledger *Ledger) computeAverage(totalAge int, totalAgeCommitment AgeCommitment, totalPatients int) int {
+	if verifyAgeCommitment(totalAge, &totalAgeCommitment, ledger.Key.pk, ledger.Key.sk) {
+		return totalAge / totalPatients
+	}
 
-	average := PatientLedgerCurve.Mult(totalAge, totalPatientsBigInt)
-
-	return average
+	return 0
 }

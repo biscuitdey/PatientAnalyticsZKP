@@ -1,12 +1,36 @@
 package main
 
+import (
+	"math/big"
+
+	"github.com/mit-dci/zksigma"
+)
+
 type Ledger struct {
 	Patients []EncryptedPatient
+	Key      *Key
+}
+
+type Key struct {
+	pk zksigma.ECPoint
+	sk *big.Int
+}
+
+func generateKey() *Key {
+	newPk, newSK := zksigma.KeyGen(PatientLedgerCurve.C, PatientLedgerCurve.H)
+
+	key := &Key{
+		pk: newPk,
+		sk: newSK,
+	}
+
+	return key
 }
 
 func MakeLedger() *Ledger {
 	ledger := &Ledger{
 		Patients: make([]EncryptedPatient, 0),
+		Key:      generateKey(),
 	}
 	return ledger
 }
