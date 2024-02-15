@@ -49,7 +49,12 @@ func generateAgeCommitment(age int) *AgeCommitment {
 	return ageCommitment
 }
 
-func verifyAgeCommitment(age int, ageCommitment AgeCommitment) bool {
-	ageBigInt := new(big.Int).SetInt64(int64(age))
-	return zksigma.Open(PatientLedgerCurve, ageBigInt, &ageCommitment.randomValue, ageCommitment.commitment)
+func verifyAgeCommitment(expectedAge int, computedAgeCommitment zksigma.ECPoint) bool {
+	expectedAgeBitInt := new(big.Int).SetInt64(int64(expectedAge))
+	expectedAgeCommitment, _, _ := zksigma.PedCommit(PatientLedgerCurve, expectedAgeBitInt)
+
+	if expectedAgeCommitment.X.Cmp(computedAgeCommitment.X) == 0 && expectedAgeCommitment.Y.Cmp(computedAgeCommitment.Y) == 0 {
+		return true
+	}
+	return false
 }
