@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/sha256"
+	"math/big"
+
 	"github.com/consensys/gnark-crypto/ecc"
 	"github.com/consensys/gnark/backend/groth16"
 	"github.com/consensys/gnark/frontend"
@@ -65,4 +68,17 @@ func (zkp *ZeroKnowledgeProof) verify(disease string) bool {
 		return false
 	}
 	return true
+}
+
+func hash(data string) []byte {
+	hasher := sha256.New()
+	hasher.Write([]byte("string"))
+	md := hasher.Sum(nil)
+
+	return md
+}
+
+func hashToBigInt(data []byte) *big.Int {
+	dataBigInt := new(big.Int).SetBytes(data)
+	return dataBigInt
 }
