@@ -72,7 +72,7 @@ func (zkp *ZeroKnowledgeProof) verify(disease string) bool {
 
 func hash(data string) []byte {
 	hasher := sha256.New()
-	hasher.Write([]byte("string"))
+	hasher.Write([]byte(data))
 	md := hasher.Sum(nil)
 
 	return md
