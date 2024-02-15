@@ -16,3 +16,13 @@ func (ledger *Ledger) add(encryptedPatient *EncryptedPatient) int {
 	ledger.Patients = append(ledger.Patients, *encryptedPatient)
 	return encryptedPatient.id
 }
+
+func (ledger *Ledger) filter(disease string) (filteredPatients []EncryptedPatient) {
+
+	for _, encryptedPatient := range ledger.Patients {
+		if encryptedPatient.disease.verify(disease) {
+			filteredPatients = append(filteredPatients, encryptedPatient)
+		}
+	}
+	return
+}
