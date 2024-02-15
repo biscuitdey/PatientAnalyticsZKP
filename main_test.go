@@ -15,6 +15,7 @@ func TestAverageAllPatients(t *testing.T) {
 	fmt.Printf("Encrypted average age matches expected average age. Average age: %d", encryptedAverageAge)
 
 	fmt.Println()
+	fmt.Println()
 
 }
 
@@ -31,6 +32,7 @@ func TestAverageAsthmaPatients(t *testing.T) {
 	fmt.Printf("Encrypted average age of asthma patients matches expected average age mismatch. Average age: %d", encryptedAverageAge)
 
 	fmt.Println()
+	fmt.Println()
 }
 
 func TestAverageDiabetesPatients(t *testing.T) {
@@ -46,11 +48,21 @@ func TestAverageDiabetesPatients(t *testing.T) {
 	fmt.Printf("Encrypted average age of diabetes patients matches expected average age mismatch. Average age: %d", encryptedAverageAge)
 
 	fmt.Println()
+	fmt.Println()
 
 }
 
 func TestZKCircuitTest(t *testing.T) {
 
 	proof := generateProof("asthma")
-	fmt.Println(proof.verify("diabetes"))
+
+	fmt.Printf("%t : Public input (diabetes) does not match with zk proof (asthma)", proof.verify("diabetes"))
+
+	fmt.Println()
+
+	fmt.Printf("%t : Public input (asthma) matches with zk proof (asthma)", proof.verify("asthma"))
+
+	fmt.Println()
+	fmt.Println()
+
 }
