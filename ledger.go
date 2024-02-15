@@ -48,5 +48,5 @@ func (ledger *Ledger) filter(disease string) (filteredPatients []EncryptedPatien
 			filteredPatients = append(filteredPatients, encryptedPatient)
 		}
 	}
-	return
+	return filteredPatients
 }
