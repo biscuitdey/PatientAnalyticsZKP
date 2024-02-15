@@ -17,7 +17,6 @@ func main() {
 	//2.4. Get average get of patients with specific disease
 
 	//3. Open the commitment to verify --> unencrypted average age matches encrypted average age
-	// zksigma.Open(a, b, c, average)
 
 }
 
