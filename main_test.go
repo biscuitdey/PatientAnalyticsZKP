@@ -7,11 +7,6 @@ import (
 
 func TestAverageAllPatients(t *testing.T) {
 
-	//TODO: JUST CHECK SUMS
-
-	//https://github.com/mit-dci/zkledger/blob/master/bank.go#L742 --> SEE "answerSum"
-
-	//TODO: Need to add pk and sk for all patients
 	patients, ledger := SetupTestData()
 
 	totalAge := calculateTotalAge(patients)
