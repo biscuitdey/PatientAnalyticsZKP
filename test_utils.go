@@ -1,23 +1,58 @@
 package main
 
 import (
-	"crypto/sha256"
-	"math/big"
-
 	"github.com/mit-dci/zksigma"
 )
 
-func hash(data string) []byte {
-	hasher := sha256.New()
-	hasher.Write([]byte("string"))
-	md := hasher.Sum(nil)
+func SetupTestData() ([]Patient, *Ledger) {
+	//Make ledger
+	ledger := MakeLedger()
 
-	return md
-}
+	//Patient data
+	patients := []Patient{
+		{
+			disease: "asthma",
+			age:     36,
+		}, {
+			disease: "diabetes",
+			age:     57,
+		}, {
+			disease: "diabetes",
+			age:     44,
+		}, {
+			disease: "asthma",
+			age:     59,
+		}, {
+			disease: "asthma",
+			age:     82,
+		}, {
+			disease: "asthma",
+			age:     37,
+		}, {
+			disease: "diabetes",
+			age:     53,
+		}, {
+			disease: "asthma",
+			age:     40,
+		}, {
+			disease: "diabetes",
+			age:     25,
+		}, {
+			disease: "asthma",
+			age:     76,
+		}, {
+			disease: "asthma",
+			age:     63,
+		},
+	}
 
-func hashToBigInt(data []byte) *big.Int {
-	dataBigInt := new(big.Int).SetBytes(data)
-	return dataBigInt
+	//Encrypt patient data and add to ledger
+	for _, patient := range patients {
+		encryptedPatient := MakeEncryptedPatient(patient.disease, patient.age)
+		ledger.add(encryptedPatient)
+	}
+
+	return patients, ledger
 }
 
 func calculateAverageAge(patients []Patient) int {
