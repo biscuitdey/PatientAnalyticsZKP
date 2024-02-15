@@ -31,7 +31,7 @@ func TestAverageAsthmaPatients(t *testing.T) {
 	encryptedAsthmaPatients := ledger.filter("asthma")
 
 	totalAge := calculateTotalAge(asthmaPatients)
-	encryptedAverageAge := ledger.calculateAverageAge(totalAge, len(patients), encryptedAsthmaPatients)
+	encryptedAverageAge := ledger.calculateAverageAge(totalAge, len(asthmaPatients), encryptedAsthmaPatients)
 
 	fmt.Printf("Encrypted average age of asthma patients matches expected average age mismatch. Average age: %d", encryptedAverageAge)
 
@@ -46,10 +46,16 @@ func TestAverageDiabetesPatients(t *testing.T) {
 	encryptedDiabetesPatients := ledger.filter("diabetes")
 
 	totalAge := calculateTotalAge(diabetesPatients)
-	encryptedAverageAge := ledger.calculateAverageAge(totalAge, len(patients), encryptedDiabetesPatients)
+	encryptedAverageAge := ledger.calculateAverageAge(totalAge, len(diabetesPatients), encryptedDiabetesPatients)
 
 	fmt.Printf("Encrypted average age of diabetes patients matches expected average age mismatch. Average age: %d", encryptedAverageAge)
 
 	fmt.Println()
 
+}
+
+func TestZKCircuitTest(t *testing.T) {
+
+	proof := generateProof("asthma")
+	fmt.Println(proof.verify("diabetes"))
 }
