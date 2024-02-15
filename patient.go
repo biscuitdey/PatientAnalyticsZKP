@@ -10,6 +10,11 @@ type AgeCommitment struct {
 	commitment  zksigma.ECPoint
 	randomValue big.Int
 }
+
+type Patient struct {
+	disease string
+	age     int
+}
 type EncryptedPatient struct {
 	id      int
 	disease ZeroKnowledgeProof

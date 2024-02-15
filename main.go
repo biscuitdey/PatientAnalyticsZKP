@@ -7,6 +7,44 @@ import (
 
 func main() {
 
+	//Patients
+	patients := []Patient{
+		Patient{
+			disease: "asthma",
+			age:     36,
+		}, Patient{
+			disease: "diabetes",
+			age:     57,
+		}, Patient{
+			disease: "diabetes",
+			age:     44,
+		}, Patient{
+			disease: "asthma",
+			age:     59,
+		}, Patient{
+			disease: "asthma",
+			age:     82,
+		}, Patient{
+			disease: "asthma",
+			age:     37,
+		}, Patient{
+			disease: "diabetes",
+			age:     53,
+		}, Patient{
+			disease: "asthma",
+			age:     40,
+		}, Patient{
+			disease: "diabetes",
+			age:     25,
+		}, Patient{
+			disease: "asthma",
+			age:     76,
+		}, Patient{
+			disease: "asthma",
+			age:     63,
+		},
+	}
+
 	//TEST
 	//1. Calculate average age of patients (unencrypted)
 
