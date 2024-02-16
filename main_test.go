@@ -29,7 +29,7 @@ func TestAverageAsthmaPatients(t *testing.T) {
 	totalAge := calculateTotalAge(asthmaPatients)
 	encryptedAverageAge := ledger.calculateAverageAge(totalAge, len(asthmaPatients), encryptedAsthmaPatients)
 
-	fmt.Printf("Encrypted average age of asthma patients matches expected average age mismatch. Average age: %d", encryptedAverageAge)
+	fmt.Printf("Encrypted average age of asthma patients matches expected average age. Average age: %d", encryptedAverageAge)
 
 	fmt.Println()
 	fmt.Println()
@@ -45,7 +45,7 @@ func TestAverageDiabetesPatients(t *testing.T) {
 	totalAge := calculateTotalAge(diabetesPatients)
 	encryptedAverageAge := ledger.calculateAverageAge(totalAge, len(diabetesPatients), encryptedDiabetesPatients)
 
-	fmt.Printf("Encrypted average age of diabetes patients matches expected average age mismatch. Average age: %d", encryptedAverageAge)
+	fmt.Printf("Encrypted average age of diabetes patients matches expected average age. Average age: %d", encryptedAverageAge)
 
 	fmt.Println()
 	fmt.Println()
