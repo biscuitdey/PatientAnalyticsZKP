@@ -22,20 +22,16 @@ Allows for the generation and verification of zero-knowledge proofs ensuring the
 
 Sets up the cryptographic parameters required for the patient ledger system, enabling secure cryptographic operations such as point generation and manipulation on the curve.
 
-```
-
-
-# Run the following command for tests
+Run the following command for tests
 
 ```
-
 go test
 
 ```
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first
 to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
-```
