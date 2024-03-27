@@ -51,12 +51,43 @@ func (ledger *Ledger) generateAgeCommitment(age int) *AgeCommitment {
 	return ageCommitment
 }
 
+/*
+Exponential map: v -> g^v
+Scalar multiplication: v -> v * G
+Age Commitment = g^v * h^r = vG + rH
+Secret Key (sk) = s
+Public Key (pk) = p = h^s = sH
+Token Commitment = r * p = r * s * H = h^(r * s)
+*/
+
 func verifyAgeCommitment(expectedAge int, computedAge *AgeCommitment, pk zksigma.ECPoint, sk *big.Int) bool {
 	expectedAgeBitInt := new(big.Int).SetInt64(int64(expectedAge))
 
-	gv := PatientLedgerCurve.Neg(PatientLedgerCurve.Mult(PatientLedgerCurve.G, expectedAgeBitInt)) // 1 / g^\sum{v_i}
-	T := PatientLedgerCurve.Add(computedAge.commitment, gv)
+	//vG = totalAge * G                               ==> g^v
+	vg := PatientLedgerCurve.Mult(PatientLedgerCurve.G, expectedAgeBitInt)
+	//Additive inverse of vG = -vG                    ==> multiplicative inverse of g^v = 1/g^v
+	minusgv := PatientLedgerCurve.Neg(vg)
+	//Commitment - vG = vG + rH - vG = rH             ==> Commitment/g^v = h^v
+	T := PatientLedgerCurve.Add(computedAge.commitment, minusgv)
 
+	//Equivalence proof
+	/*
+		EXPONENTIAL
+			BasePoint1 = h^r
+			Result1 = h^(r * s)
+			BasePoint2 = h
+			Result2 = h^(s)
+			Equivalence:  log_h^r (h^rs) = log_h(p)
+	*/
+
+	/*
+		SCALAR MULTIPLICATION
+			BasePoint1 = rH
+			Result1 = s * rH
+			BasePoint2 = H
+			Result2 = s * H
+			Equal scalar value = s
+	*/
 	equivalenceProof, _ := zksigma.NewEquivalenceProof(PatientLedgerCurve, T, computedAge.randomValueToken, PatientLedgerCurve.H, pk, sk)
 	isVerified, _ := equivalenceProof.Verify(PatientLedgerCurve, T, computedAge.randomValueToken, PatientLedgerCurve.H, pk)
 
