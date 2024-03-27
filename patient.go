@@ -38,6 +38,7 @@ func generateDiseaseProof(disease string) *ZeroKnowledgeProof {
 	return generateProof(disease)
 }
 
+// Hospital uses researchers public key to generate randomValueToken commitment
 func (ledger *Ledger) generateAgeCommitment(age int) *AgeCommitment {
 	ageBigInt := new(big.Int).SetInt64(int64(age))
 	commitment, randomValue, _ := zksigma.PedCommit(PatientLedgerCurve, ageBigInt)
@@ -70,14 +71,14 @@ func verifyAgeCommitment(expectedAge int, computedAge *AgeCommitment, pk zksigma
 	//Commitment - vG = vG + rH - vG = rH             ==> Commitment/g^v = h^v
 	T := PatientLedgerCurve.Add(computedAge.commitment, minusgv)
 
-	//Equivalence proof
+	//Equivalence proof: Both base points are multiplied by same scalar value
 	/*
 		EXPONENTIAL
 			BasePoint1 = h^r
 			Result1 = h^(r * s)
 			BasePoint2 = h
 			Result2 = h^(s)
-			Equivalence:  log_h^r (h^rs) = log_h(p)
+			Equivalence:  log_h^r (h^rs) = log_h(p) = log_h(h^s)
 	*/
 
 	/*
